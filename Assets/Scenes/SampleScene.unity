@@ -131,9 +131,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1258811687407497394, guid: 02c49c5e33a4b354cbe5548bdf12ca79, type: 3}
+      propertyPath: m_SortingOrder
+      value: -1
+      objectReference: {fileID: 0}
     - target: {fileID: 2515561993825707854, guid: 02c49c5e33a4b354cbe5548bdf12ca79, type: 3}
       propertyPath: m_Name
       value: arrTurtle_r2 (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7525259628779170853, guid: 02c49c5e33a4b354cbe5548bdf12ca79, type: 3}
+      propertyPath: m_SortingOrder
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 8170039136459944624, guid: 02c49c5e33a4b354cbe5548bdf12ca79, type: 3}
       propertyPath: m_LocalPosition.x
@@ -565,9 +573,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1258811687407497394, guid: 02c49c5e33a4b354cbe5548bdf12ca79, type: 3}
+      propertyPath: m_SortingOrder
+      value: -1
+      objectReference: {fileID: 0}
     - target: {fileID: 2515561993825707854, guid: 02c49c5e33a4b354cbe5548bdf12ca79, type: 3}
       propertyPath: m_Name
       value: arrTurtle_r2 (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7525259628779170853, guid: 02c49c5e33a4b354cbe5548bdf12ca79, type: 3}
+      propertyPath: m_SortingOrder
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 8170039136459944624, guid: 02c49c5e33a4b354cbe5548bdf12ca79, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1080,9 +1096,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1258811687407497394, guid: 02c49c5e33a4b354cbe5548bdf12ca79, type: 3}
+      propertyPath: m_SortingOrder
+      value: -1
+      objectReference: {fileID: 0}
     - target: {fileID: 2515561993825707854, guid: 02c49c5e33a4b354cbe5548bdf12ca79, type: 3}
       propertyPath: m_Name
       value: arrTurtle_r2 (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7525259628779170853, guid: 02c49c5e33a4b354cbe5548bdf12ca79, type: 3}
+      propertyPath: m_SortingOrder
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 8170039136459944624, guid: 02c49c5e33a4b354cbe5548bdf12ca79, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1328,6 +1352,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1027041747461482822, guid: 084399c634c63974eb0c452ab5568f3c, type: 3}
+      propertyPath: m_SortingOrder
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1030720080110751400, guid: 084399c634c63974eb0c452ab5568f3c, type: 3}
+      propertyPath: m_SortingOrder
+      value: -1
+      objectReference: {fileID: 0}
     - target: {fileID: 2252543977997235376, guid: 084399c634c63974eb0c452ab5568f3c, type: 3}
       propertyPath: m_IsTrigger
       value: 1
@@ -1343,6 +1375,10 @@ PrefabInstance:
     - target: {fileID: 4132432639278596433, guid: 084399c634c63974eb0c452ab5568f3c, type: 3}
       propertyPath: m_Name
       value: arrTurtles (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4132526532987970807, guid: 084399c634c63974eb0c452ab5568f3c, type: 3}
+      propertyPath: m_SortingOrder
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 8975674386283073794, guid: 084399c634c63974eb0c452ab5568f3c, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2064,6 +2100,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1027041747461482822, guid: 084399c634c63974eb0c452ab5568f3c, type: 3}
+      propertyPath: m_SortingOrder
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1030720080110751400, guid: 084399c634c63974eb0c452ab5568f3c, type: 3}
+      propertyPath: m_SortingOrder
+      value: -1
+      objectReference: {fileID: 0}
     - target: {fileID: 2252543977997235376, guid: 084399c634c63974eb0c452ab5568f3c, type: 3}
       propertyPath: m_IsTrigger
       value: 1
@@ -2079,6 +2123,10 @@ PrefabInstance:
     - target: {fileID: 4132432639278596433, guid: 084399c634c63974eb0c452ab5568f3c, type: 3}
       propertyPath: m_Name
       value: arrTurtles (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4132526532987970807, guid: 084399c634c63974eb0c452ab5568f3c, type: 3}
+      propertyPath: m_SortingOrder
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 8975674386283073794, guid: 084399c634c63974eb0c452ab5568f3c, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2441,6 +2489,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1027041747461482822, guid: 084399c634c63974eb0c452ab5568f3c, type: 3}
+      propertyPath: m_SortingOrder
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1030720080110751400, guid: 084399c634c63974eb0c452ab5568f3c, type: 3}
+      propertyPath: m_SortingOrder
+      value: -1
+      objectReference: {fileID: 0}
     - target: {fileID: 2252543977997235376, guid: 084399c634c63974eb0c452ab5568f3c, type: 3}
       propertyPath: m_IsTrigger
       value: 1
@@ -2456,6 +2512,10 @@ PrefabInstance:
     - target: {fileID: 4132432639278596433, guid: 084399c634c63974eb0c452ab5568f3c, type: 3}
       propertyPath: m_Name
       value: arrTurtles (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4132526532987970807, guid: 084399c634c63974eb0c452ab5568f3c, type: 3}
+      propertyPath: m_SortingOrder
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 8975674386283073794, guid: 084399c634c63974eb0c452ab5568f3c, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2905,9 +2965,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1258811687407497394, guid: 02c49c5e33a4b354cbe5548bdf12ca79, type: 3}
+      propertyPath: m_SortingOrder
+      value: -1
+      objectReference: {fileID: 0}
     - target: {fileID: 2515561993825707854, guid: 02c49c5e33a4b354cbe5548bdf12ca79, type: 3}
       propertyPath: m_Name
       value: arrTurtle_r2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7525259628779170853, guid: 02c49c5e33a4b354cbe5548bdf12ca79, type: 3}
+      propertyPath: m_SortingOrder
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 8170039136459944624, guid: 02c49c5e33a4b354cbe5548bdf12ca79, type: 3}
       propertyPath: m_LocalPosition.x
@@ -3019,6 +3087,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1027041747461482822, guid: 084399c634c63974eb0c452ab5568f3c, type: 3}
+      propertyPath: m_SortingOrder
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1030720080110751400, guid: 084399c634c63974eb0c452ab5568f3c, type: 3}
+      propertyPath: m_SortingOrder
+      value: -1
+      objectReference: {fileID: 0}
     - target: {fileID: 2252543977997235376, guid: 084399c634c63974eb0c452ab5568f3c, type: 3}
       propertyPath: m_IsTrigger
       value: 1
@@ -3034,6 +3110,10 @@ PrefabInstance:
     - target: {fileID: 4132432639278596433, guid: 084399c634c63974eb0c452ab5568f3c, type: 3}
       propertyPath: m_Name
       value: arrTurtles
+      objectReference: {fileID: 0}
+    - target: {fileID: 4132526532987970807, guid: 084399c634c63974eb0c452ab5568f3c, type: 3}
+      propertyPath: m_SortingOrder
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 8975674386283073794, guid: 084399c634c63974eb0c452ab5568f3c, type: 3}
       propertyPath: m_LocalPosition.x
