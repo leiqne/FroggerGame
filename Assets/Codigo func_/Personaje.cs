@@ -11,6 +11,7 @@ public class Personaje : MonoBehaviour
     private SpriteRenderer sprite1;
     public Sprite sSalto;//public para q se vea en unity como propiedad
     public Sprite sDfault;
+    public Sprite sMuerto;
     private void Awake()
     {
         sprite1 = GetComponent<SpriteRenderer>();
@@ -51,7 +52,24 @@ public class Personaje : MonoBehaviour
     {
         //transform.position += direc;
         Vector3 dest = transform.position + direc;
-        StartCoroutine(salto(dest));
+        Collider2D barrera=Physics2D.OverlapBox(dest, Vector2.zero, 0f, LayerMask.GetMask("barrera"));
+        Collider2D plataforma=Physics2D.OverlapBox(dest, Vector2.zero, 0f, LayerMask.GetMask("plataforma"));
+        Collider2D obs=Physics2D.OverlapBox(dest, Vector2.zero, 0f, LayerMask.GetMask("obstaculo"));
+        if (barrera != null) { return; }//para que cuando haya contacto con la barrera este no se mueva por lo que no se movera el pj
+        if (plataforma!=null){
+            transform.SetParent(plataforma.transform);//para que se mueva con la plataforma
+        }else{
+            transform.SetParent(null);//en caso ya no este encima de la plataforma
+        }
+        if (obs != null && plataforma == null)
+        {
+            transform.position = dest;
+            muerto();
+        }
+        else
+        {
+            StartCoroutine(salto(dest));
+        }
     }
     private IEnumerator salto(Vector3 desti)//cambiar posicion
     {
@@ -83,5 +101,18 @@ public class Personaje : MonoBehaviour
             float angle = Mathf.Atan2(externalDirection.y, externalDirection.x) * Mathf.Rad2Deg;
             transform.rotation = Quaternion.Euler(0f, 0f, angle);
         }
+    }
+    void muerto()
+    {
+        transform.rotation = Quaternion.identity;
+        sprite1.sprite = sMuerto;
+        enabled = false;
+    }
+    private void OnTriggerEnter2D(Collider2D other)   
+    {
+        if (enabled&&other.gameObject.layer== LayerMask.NameToLayer("obstaculo")&&transform.parent==null)
+        {
+            muerto();
+        }   
     }
 }
