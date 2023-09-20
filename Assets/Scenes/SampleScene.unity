@@ -1322,6 +1322,7 @@ GameObject:
   - component: {fileID: 919604969}
   - component: {fileID: 919604968}
   - component: {fileID: 919604972}
+  - component: {fileID: 919604973}
   m_Layer: 0
   m_Name: Personaje1
   m_TagString: Player
@@ -1483,6 +1484,19 @@ MonoBehaviour:
   sSalto: {fileID: 21300000, guid: c032d92b984378d4ebe60f300734cb08, type: 3}
   sDfault: {fileID: 21300000, guid: accdfca821fcfad4aa0e79fe4138f7df, type: 3}
   sMuerto: {fileID: 21300000, guid: 1695d102dbd9a5949a838586c2e47c81, type: 3}
+--- !u!114 &919604973
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 919604966}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e00d3ed85c2a1424ab5dd22487932211, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 919604966}
 --- !u!1001 &932342335
 PrefabInstance:
   m_ObjectHideFlags: 0

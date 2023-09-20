@@ -48,7 +48,7 @@ public abstract class Personaje : MonoBehaviour
         }
     }
 
-    private void MoveCharacter(Vector3 direc)
+    public void MoveCharacter(Vector3 direc)
     {
         Vector3 dest = transform.position + direc;
         Collider2D barrera = Physics2D.OverlapBox(dest, Vector2.zero, 0f, LayerMask.GetMask("barrera"));
