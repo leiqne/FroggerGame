@@ -9,9 +9,9 @@ using System.Net.Sockets;
 public class Client : MonoBehaviour
 {
     public static Client instance;
-    public static int dataBufferSize = 4096;
+    public static int dataBufferSize = 1234;
     public string ip = "127.0.0.1";
-    public int port = 1234;
+    public int port = 15841;
     public int myId = 0;
     public TCP tcp;
 
@@ -45,6 +45,10 @@ public class Client : MonoBehaviour
             Debug.LogError("No se pudo conectar al servidor.");
         }
     }
+    public void Disconnect()
+    {
+        tcp.Close();
+    }
 
     public class TCP
     {
@@ -77,7 +81,14 @@ public class Client : MonoBehaviour
                 return false;
             }
         }
-
+        public void Close()
+        {
+            if (socket != null && socket.Connected)
+            {
+                socket.Close();
+                Debug.Log("Conexión cerrada.");
+            }
+        }
         public void SendData(string data)
         {
             if (socket == null || !socket.Connected)
@@ -88,9 +99,44 @@ public class Client : MonoBehaviour
 
             try
             {
+                byte[] datasend = Encoding.Default.GetBytes(data);
+                int length = data.Length;
+                byte[] lengthBytes = BitConverter.GetBytes(length);
 
-                byte[] dataBuffer = Encoding.Default.GetBytes(data);
-                stream.Write(dataBuffer, 0, dataBuffer.Length);
+                if (!BitConverter.IsLittleEndian)
+                {
+                    Array.Reverse(lengthBytes);
+                }
+
+                byte[] headerBytes = new byte[18];
+
+                // Copia la longitud (en formato little-endian) en el encabezado
+                Array.Copy(lengthBytes, 0, headerBytes, 0, 4);
+
+                // Agrega el texto "|bot" al encabezado
+                byte[] botBytes = Encoding.Default.GetBytes("|bot");
+                Array.Copy(botBytes, 0, headerBytes, 4, botBytes.Length);
+
+                // Llena el resto del encabezado con '\x00' si es necesario
+                for (int i = 4 + botBytes.Length; i < headerBytes.Length; i++)
+                {
+                    headerBytes[i] = (byte)'\x00';
+                }
+
+                stream.Write(headerBytes, 0, headerBytes.Length);
+
+                int bytesSent = 0;
+                int chunkSize = 254; // Tamaño del fragmento
+
+                // Enviar los datos en fragmentos
+                while (bytesSent < datasend.Length)
+                {
+                    int remainingBytes = datasend.Length - bytesSent;
+                    int currentChunkSize = Math.Min(chunkSize, remainingBytes);
+                    stream.Write(datasend, 0, datasend.Length);
+                    bytesSent += currentChunkSize;
+                }
+
             }
             catch (Exception e)
             {

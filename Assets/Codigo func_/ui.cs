@@ -6,6 +6,7 @@ public class ui : MonoBehaviour
 {
     public static ui instance;
     public GameObject startMenu;
+    public GameObject startMenu2;
     private void Awake()
     {
         if (instance == null)
@@ -22,5 +23,10 @@ public class ui : MonoBehaviour
     {
         startMenu.SetActive(false);
         Client.instance.connectToServer();
+    }
+    public void DisconnecttoServ()
+    {
+        startMenu2.SetActive(false);
+        Client.instance.Disconnect();
     }
 }
