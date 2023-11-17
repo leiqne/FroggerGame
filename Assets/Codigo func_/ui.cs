@@ -22,11 +22,11 @@ public class ui : MonoBehaviour
     public void ConnecttoServ()
     {
         startMenu.SetActive(false);
-        Client.instance.connectToServer();
+        Personaje.instance.connectToServer();
     }
     public void DisconnecttoServ()
     {
         startMenu2.SetActive(false);
-        Client.instance.Disconnect();
+        Personaje.instance.Disconnect();
     }
 }
