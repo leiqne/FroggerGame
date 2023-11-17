@@ -23,4 +23,17 @@ public class PersonajeFlechas : Personaje
     {
         return Input.GetKeyDown(KeyCode.RightArrow);
     }
+    public void conect()
+    {
+        connectToServer();
+    }
+    public void Disconnectconect()
+    {
+        //TO-DO
+    }
+    public void EnviarEntornoAlServidor(int rango)
+    {
+        Entorno entorno = ObtenerEntornoDelPersonaje(rango);
+        // Lógica para enviar el entorno al servidor usando tcp.SendData o cualquier método necesario
+    }
 }

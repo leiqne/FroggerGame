@@ -158,7 +158,10 @@ public abstract class Personaje : MonoBehaviour
     {
         tcp = new TCP();
     }
-
+    public Entorno ObtenerEntornoDelPersonaje(int rango)
+    {
+        return ObtenerEntorno(rango);
+    }
     public void connectToServer()
     {
         if (tcp.Connect(ip, port))
