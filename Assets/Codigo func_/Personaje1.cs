@@ -41,7 +41,9 @@ public class PersonajeFlechas : Personaje
 
         Entorno entorno = ObtenerEntornoDelPersonaje(rango);
         string dataString = entorno.convertToString();
+        
         tcp.SendData(dataString);
         tcp.ReceiveData();
     }
+
 }

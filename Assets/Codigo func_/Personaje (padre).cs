@@ -56,7 +56,7 @@ public abstract class Personaje : MonoBehaviour
     public static Personaje instance;
     public static int dataBufferSize = 1234;
     private string ip = "0.tcp.sa.ngrok.io";
-    private int port = 10545;
+    private int port = 11554;
     public TCP tcp;
 
 
@@ -335,54 +335,41 @@ public abstract class Personaje : MonoBehaviour
             }
         }
 
+
         public string ReceiveData()
         {
             try
             {
-                if (socket == null || !socket.Connected)
-                {
-                    UnityEngine.Debug.LogError("No se puede recibir datos, el socket no está conectado.");
-                    return null;
-                }
-
-                // Leer la longitud del mensaje desde el encabezado
+                // Lee la longitud del mensaje
                 byte[] lengthBytes = new byte[4];
                 stream.Read(lengthBytes, 0, 4);
                 int length = BitConverter.ToInt32(lengthBytes, 0);
 
-                if (length <= 0)
-                {
-                    UnityEngine.Debug.LogError("Longitud de mensaje no válida: " + length);
-                    return null;
-                }
+                // Lee el encabezado
+                byte[] headerBytes = new byte[14];
+                stream.Read(headerBytes, 0, 14);
+                string header = Encoding.Default.GetString(headerBytes);
 
-                // Leer el mensaje completo
+
+                // Lee los datos en fragmentos
                 byte[] dataBuffer = new byte[length];
-                int bytesRead = 0;
-                int totalBytesRead = 0;
+                int totalBytesReceived = 0;
 
-                while (totalBytesRead < length)
+                while (totalBytesReceived < length)
                 {
-                    bytesRead = stream.Read(dataBuffer, totalBytesRead, length - totalBytesRead);
-                    if (bytesRead <= 0)
+                    int bytesRead = stream.Read(dataBuffer, totalBytesReceived, length - totalBytesReceived);
+                    if (bytesRead == 0)
                     {
-                        // Se cerró la conexión
-                        UnityEngine.Debug.LogError("La conexión se cerró inesperadamente.");
-                        return null;
+                        UnityEngine.Debug.Log("La conexión se cerró antes de recibir todos los datos.");
+                        break;
                     }
-                    totalBytesRead += bytesRead;
+                    totalBytesReceived += bytesRead;
                 }
 
-                // Convertir los bytes a string, omitiendo los bytes nulos al principio
-                string receivedData = Encoding.UTF8.GetString(dataBuffer, 4, length - 4);
+                string receivedMessage = Encoding.Default.GetString(dataBuffer);
+                UnityEngine.Debug.Log("Mensaje recibido: " + receivedMessage);
 
-                // Imprimir la longitud del mensaje en la consola de Unity
-                UnityEngine.Debug.Log("Longitud del mensaje: " + length);
-
-                // Imprimir el mensaje recibido en la consola de Unity
-                UnityEngine.Debug.Log("Mensaje recibido: " + receivedData);
-
-                return receivedData;
+                return receivedMessage;
             }
             catch (Exception e)
             {
@@ -390,6 +377,5 @@ public abstract class Personaje : MonoBehaviour
                 return null;
             }
         }
-
     };
 }
