@@ -26,14 +26,22 @@ public class PersonajeFlechas : Personaje
     public void conect()
     {
         connectToServer();
+        EnviarEntornoAlServidor(2);
     }
-    public void Disconnectconect()
+    public void Disconnect()
     {
         //TO-DO
     }
-    public void EnviarEntornoAlServidor(int rango)
+    private void Start()
     {
+        tcp = new TCP();
+    }
+    public void EnviarEntornoAlServidor(int rango)
+{
+
         Entorno entorno = ObtenerEntornoDelPersonaje(rango);
-        // Lógica para enviar el entorno al servidor usando tcp.SendData o cualquier método necesario
+        string dataString = entorno.convertToString();
+        tcp.SendData(dataString);
+        tcp.ReceiveData();
     }
 }

@@ -6,6 +6,7 @@ using System.Text;
 using System.Net;
 using System.Net.Sockets;
 using System.Diagnostics;
+[System.Serializable]
 
 
 
@@ -14,11 +15,48 @@ public abstract class Personaje : MonoBehaviour
     public struct Entorno
     {
         public int[,] datos;
+
+        public string convertToString()
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.Append("[\n");
+
+            for (int i = 0; i < datos.GetLength(0); i++)
+            {
+                stringBuilder.Append("  [");
+
+                for (int j = 0; j < datos.GetLength(1); j++)
+                {
+                    stringBuilder.Append(datos[i, j]);
+
+                    if (j < datos.GetLength(1) - 1)
+                    {
+                        stringBuilder.Append(", ");
+                    }
+                }
+
+                stringBuilder.Append("]");
+
+                if (i < datos.GetLength(0) - 1)
+                {
+                    stringBuilder.Append(",\n");
+                }
+                else
+                {
+                    stringBuilder.Append("\n");
+                }
+            }
+
+            stringBuilder.Append("]");
+            return stringBuilder.ToString();
+        }
+
+
     }
     public static Personaje instance;
     public static int dataBufferSize = 1234;
     private string ip = "0.tcp.sa.ngrok.io";
-    private int port = 10490;
+    private int port = 10545;
     public TCP tcp;
 
 
@@ -39,7 +77,7 @@ public abstract class Personaje : MonoBehaviour
         {
             instance = this;
         }
-        
+
     }
     private void Update()
     {
@@ -67,6 +105,11 @@ public abstract class Personaje : MonoBehaviour
             transform.rotation = Quaternion.Euler(0f, 0f, -90f);
             MoveCharacter(Vector3.right);
         }
+
+
+
+
+
     }
     public void MoveCharacter(Vector3 direc)
     {
@@ -144,11 +187,31 @@ public abstract class Personaje : MonoBehaviour
         Vector3 posicionActual = transform.position;
         Entorno entorno = new Entorno();
         entorno.datos = new int[rango * 2 + 1, rango * 2 + 1];
+
         for (int i = -rango; i <= rango; i++)
         {
             for (int j = -rango; j <= rango; j++)
             {
                 Vector3 posicionAnalizada = posicionActual + new Vector3(i, j, 0);
+
+                // Verificar si hay un obstáculo en la posición analizada (usar tu lógica específica)
+                Collider2D obs = Physics2D.OverlapBox(posicionAnalizada, Vector2.zero, 0f, LayerMask.GetMask("obstaculo"));
+
+                if (obs != null)
+                {
+                    // Hay un obstáculo en esta posición
+                    entorno.datos[i + rango, j + rango] = 4;
+                }
+                else if (posicionAnalizada == spawnpos)
+                {
+                    // Es la posición inicial de la rana
+                    entorno.datos[i + rango, j + rango] = 1;
+                }
+                else
+                {
+                    // Es un camino normal (default)
+                    entorno.datos[i + rango, j + rango] = 3;
+                }
             }
         }
 
@@ -157,7 +220,9 @@ public abstract class Personaje : MonoBehaviour
     private void Start()
     {
         tcp = new TCP();
+
     }
+
     public Entorno ObtenerEntornoDelPersonaje(int rango)
     {
         return ObtenerEntorno(rango);
@@ -167,7 +232,7 @@ public abstract class Personaje : MonoBehaviour
         if (tcp.Connect(ip, port))
         {
             UnityEngine.Debug.Log("Conexión exitosa al servidor.");
-            tcp.SendData("HOLA");
+
         }
         else
         {
@@ -212,12 +277,9 @@ public abstract class Personaje : MonoBehaviour
         }
         public void Close()
         {
-            if (socket != null && socket.Connected)
-            {
-                socket.Close();
-                UnityEngine.Debug.Log("Conexión cerrada.");
-            }
+
         }
+
         public void SendData(string data)
         {
             if (socket == null || !socket.Connected)
@@ -272,6 +334,62 @@ public abstract class Personaje : MonoBehaviour
                 UnityEngine.Debug.LogError("Error al enviar datos: " + e.Message);
             }
         }
-    }
 
+        public string ReceiveData()
+        {
+            try
+            {
+                if (socket == null || !socket.Connected)
+                {
+                    UnityEngine.Debug.LogError("No se puede recibir datos, el socket no está conectado.");
+                    return null;
+                }
+
+                // Leer la longitud del mensaje desde el encabezado
+                byte[] lengthBytes = new byte[4];
+                stream.Read(lengthBytes, 0, 4);
+                int length = BitConverter.ToInt32(lengthBytes, 0);
+
+                if (length <= 0)
+                {
+                    UnityEngine.Debug.LogError("Longitud de mensaje no válida: " + length);
+                    return null;
+                }
+
+                // Leer el mensaje completo
+                byte[] dataBuffer = new byte[length];
+                int bytesRead = 0;
+                int totalBytesRead = 0;
+
+                while (totalBytesRead < length)
+                {
+                    bytesRead = stream.Read(dataBuffer, totalBytesRead, length - totalBytesRead);
+                    if (bytesRead <= 0)
+                    {
+                        // Se cerró la conexión
+                        UnityEngine.Debug.LogError("La conexión se cerró inesperadamente.");
+                        return null;
+                    }
+                    totalBytesRead += bytesRead;
+                }
+
+                // Convertir los bytes a string, omitiendo los bytes nulos al principio
+                string receivedData = Encoding.UTF8.GetString(dataBuffer, 4, length - 4);
+
+                // Imprimir la longitud del mensaje en la consola de Unity
+                UnityEngine.Debug.Log("Longitud del mensaje: " + length);
+
+                // Imprimir el mensaje recibido en la consola de Unity
+                UnityEngine.Debug.Log("Mensaje recibido: " + receivedData);
+
+                return receivedData;
+            }
+            catch (Exception e)
+            {
+                UnityEngine.Debug.LogError("Error al recibir datos: " + e.Message);
+                return null;
+            }
+        }
+
+    };
 }
