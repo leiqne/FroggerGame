@@ -56,7 +56,7 @@ public abstract class Personaje : MonoBehaviour
     public static Personaje instance;
     public static int dataBufferSize = 1234;
     private string ip = "0.tcp.sa.ngrok.io";
-    private int port = 11554;
+    private int port = 15712;
     public TCP tcp;
 
 
@@ -375,6 +375,60 @@ public abstract class Personaje : MonoBehaviour
             {
                 UnityEngine.Debug.LogError("Error al recibir datos: " + e.Message);
                 return null;
+            }
+        }
+        public void StartBot(string data)
+        {
+            if (socket == null || !socket.Connected)
+            {
+                UnityEngine.Debug.LogError("No se puede enviar datos, el socket no está conectado.");
+                return;
+            }
+
+            try
+            {
+                byte[] datasend = Encoding.Default.GetBytes(data);
+                int length = data.Length;
+                byte[] lengthBytes = BitConverter.GetBytes(length);
+
+                if (!BitConverter.IsLittleEndian)
+                {
+                    Array.Reverse(lengthBytes);
+                }
+
+                byte[] headerBytes = new byte[18];
+
+                // Copia la longitud (en formato little-endian) en el encabezado
+                Array.Copy(lengthBytes, 0, headerBytes, 0, 4);
+
+                // Agrega el texto "|bot" al encabezado
+                byte[] botBytes = Encoding.Default.GetBytes("|start");
+                Array.Copy(botBytes, 0, headerBytes, 4, botBytes.Length);
+
+                // Llena el resto del encabezado con '\x00' si es necesario
+                for (int i = 4 + botBytes.Length; i < headerBytes.Length; i++)
+                {
+                    headerBytes[i] = (byte)'\x00';
+                }
+
+                stream.Write(headerBytes, 0, headerBytes.Length);
+
+                int bytesSent = 0;
+                int chunkSize = 254; // Tamaño del fragmento
+
+                // Enviar los datos en fragmentos
+                while (bytesSent < datasend.Length)
+                {
+                    int remainingBytes = datasend.Length - bytesSent;
+                    int currentChunkSize = Math.Min(chunkSize, remainingBytes);
+                    stream.Write(datasend, 0, datasend.Length);
+                    bytesSent += currentChunkSize;
+                }
+
+            }
+            catch (Exception e)
+            {
+                UnityEngine.Debug.LogError("Error al enviar datos: " + e.Message);
             }
         }
     };

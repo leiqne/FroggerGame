@@ -35,14 +35,16 @@ public class PersonajeFlechas : Personaje
     private void Start()
     {
         tcp = new TCP();
+        
     }
     public void EnviarEntornoAlServidor(int rango)
 {
 
         Entorno entorno = ObtenerEntornoDelPersonaje(rango);
         string dataString = entorno.convertToString();
-        
-        tcp.SendData(dataString);
+        tcp.StartBot("bot1;a*");
+        tcp.ReceiveData();
+        tcp.SendData("bot1;"+dataString);
         tcp.ReceiveData();
     }
 
