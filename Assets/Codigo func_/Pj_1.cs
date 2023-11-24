@@ -26,26 +26,30 @@ public class PersonajeFlechas : Personaje
     public void conect()
     {
         connectToServer();
-        EnviarEntornoAlServidor(2);
+        EnviarEntornoAlServidor();
     }
+
     public void Disconnect()
     {
         //TO-DO
     }
+    public void EnviarEntornoAlServidor()
+    {
+        string id = "bot1;";
+        string comando = "bot1;a*";
+        setComando(comando);
+        Run(comando);
+        setId(id);
+        StartCoroutine(iteracion(id));
+    }
+
     private void Start()
     {
         tcp = new TCP();
-        
     }
-    public void EnviarEntornoAlServidor(int rango)
-{
+    private void Update()
+    {
 
-        Entorno entorno = ObtenerEntornoDelPersonaje(rango);
-        string dataString = entorno.convertToString();
-        tcp.StartBot("bot1;a*");
-        tcp.ReceiveData();
-        tcp.SendData("bot1;"+dataString);
-        tcp.ReceiveData();
     }
 
 }

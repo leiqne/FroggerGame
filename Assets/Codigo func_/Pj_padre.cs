@@ -56,14 +56,19 @@ public abstract class Personaje : MonoBehaviour
     public static Personaje instance;
     public static int dataBufferSize = 1234;
     private string ip = "0.tcp.sa.ngrok.io";
-    private int port = 15712;
+    private int port = 14169;
     public TCP tcp;
-
-
+    private Stopwatch stopwatch = new Stopwatch();
+    private float tiempoEspera = 0.25f;
+    public void setId(string id_bot) { this.id_bot = id_bot; }
+    public void setComando(string id_comando) { this.id_comando = id_comando; }
     private SpriteRenderer sprite1;
     public Sprite sSalto;
     public Sprite sDfault;
     public Sprite sMuerto;
+    string received;
+    string id_bot;
+    string id_comando;
     private Vector3 spawnpos;
     protected abstract bool MoveUpInput();
     protected abstract bool MoveDownInput();
@@ -105,11 +110,6 @@ public abstract class Personaje : MonoBehaviour
             transform.rotation = Quaternion.Euler(0f, 0f, -90f);
             MoveCharacter(Vector3.right);
         }
-
-
-
-
-
     }
     public void MoveCharacter(Vector3 direc)
     {
@@ -159,13 +159,80 @@ public abstract class Personaje : MonoBehaviour
     }
     public void respawn()
     {
+        tcp.Close();  // Cierra la conexión antes de hacer respawn
         StopAllCoroutines();
         transform.rotation = Quaternion.identity;
         transform.position = spawnpos;
         sprite1.sprite = sDfault;
         gameObject.SetActive(true);
         enabled = true;
+        connectToServer();  // Restablece la conexión después del respawn
+        Run(this.id_comando);
+        StartCoroutine(iteracion(this.id_bot));  // Reinicia la corrutina después del respawn
+        
     }
+    public void Run(string comando) {
+        tcp.StartBot(comando);
+        tcp.ReceiveData();
+
+    }
+    protected IEnumerator iteracion(string id)
+    {
+        stopwatch.Start();
+        while (true)
+        {
+            Entorno entorno = ObtenerEntornoDelPersonaje(2);
+            string dataString = entorno.convertToString();
+            tcp.SendData(id + dataString);
+            stopwatch.Reset();
+            stopwatch.Start();
+            while (stopwatch.Elapsed.TotalSeconds < tiempoEspera)
+            {
+                yield return null;
+            }
+            received = tcp.ReceiveData();
+            MakeMove(received);
+            received = null;
+        }
+    }
+    protected void MakeMove(string movimientos)
+    {
+        // Separar los movimientos y tomar solo el primero
+        string[] movementsArray = movimientos.Split(',');
+        string firstMovement = movementsArray.Length > 0 ? movementsArray[0] : "";
+
+        foreach (char singleMove in firstMovement)
+        {
+            switch (singleMove)
+            {
+                case 'A':
+                    MoveCharacter(Vector3.left);
+                    transform.rotation = Quaternion.Euler(0f, 0f, 90f);
+                    UnityEngine.Debug.Log("izquierda");
+                    break;
+                case 'W':
+                    MoveCharacter(Vector3.up);
+                    transform.rotation = Quaternion.Euler(0f, 0f, 0f);
+                    break;
+                case 'S':
+                    MoveCharacter(Vector3.down);
+                    transform.rotation = Quaternion.Euler(0f, 0f, 180f);
+                    UnityEngine.Debug.Log("abajo");
+                    break;
+                case 'D':
+                    MoveCharacter(Vector3.right);
+                    transform.rotation = Quaternion.Euler(0f, 0f, -90f);
+                    UnityEngine.Debug.Log("derecha");
+                    break;
+                // Puedes agregar más casos según sea necesario
+                default:
+                    UnityEngine.Debug.LogWarning("Movimiento no reconocido: " + singleMove);
+                    break;
+            }
+        }
+    }
+
+
     protected void Muerto()
     {
         StopAllCoroutines();
@@ -187,39 +254,54 @@ public abstract class Personaje : MonoBehaviour
         Vector3 posicionActual = transform.position;
         Entorno entorno = new Entorno();
         entorno.datos = new int[rango * 2 + 1, rango * 2 + 1];
-
         for (int i = -rango; i <= rango; i++)
         {
             for (int j = -rango; j <= rango; j++)
             {
                 Vector3 posicionAnalizada = posicionActual + new Vector3(i, j, 0);
-
-                // Verificar si hay un obstáculo en la posición analizada (usar tu lógica específica)
-                Collider2D obs = Physics2D.OverlapBox(posicionAnalizada, Vector2.zero, 0f, LayerMask.GetMask("obstaculo"));
-
-                if (obs != null)
+                if (posicionAnalizada == posicionActual)
                 {
-                    // Hay un obstáculo en esta posición
-                    entorno.datos[i + rango, j + rango] = 4;
-                }
-                else if (posicionAnalizada == spawnpos)
-                {
-                    // Es la posición inicial de la rana
-                    entorno.datos[i + rango, j + rango] = 1;
+                    entorno.datos[i + rango, j + rango] = 1; // Representa la posición del personaje con un 1
                 }
                 else
                 {
-                    // Es un camino normal (default)
-                    entorno.datos[i + rango, j + rango] = 3;
+                    Collider2D pld = Physics2D.OverlapBox(posicionAnalizada, Vector2.zero, 0f, LayerMask.GetMask("plataforma", "Default"));
+                    Collider2D obs = Physics2D.OverlapBox(posicionAnalizada, Vector2.zero, 0f, LayerMask.GetMask("obstaculo"));
+
+                    // Plataforma o objeto default
+                    if (pld != null)
+                    {
+                        entorno.datos[i + rango, j + rango] = 3;
+                    }
+                    // Obstáculo
+                    else if (obs != null)
+                    {
+                        entorno.datos[i + rango, j + rango] = 4;
+                    }
+                    // Otros casos (ajusta según sea necesario)
+                    else
+                    {
+                        entorno.datos[i + rango, j + rango] = 3;
+                    }
                 }
             }
         }
 
+        // Puedes descomentar la siguiente línea para pausar el tiempo en el editor de Unity
+        
+
         return entorno;
     }
+
+
+
+
+
+
     private void Start()
     {
         tcp = new TCP();
+
 
     }
 
@@ -277,7 +359,11 @@ public abstract class Personaje : MonoBehaviour
         }
         public void Close()
         {
-
+            if (socket != null && socket.Connected)
+            {
+                stream.Close();
+                socket.Close();
+            }
         }
 
         public void SendData(string data)
@@ -287,13 +373,11 @@ public abstract class Personaje : MonoBehaviour
                 UnityEngine.Debug.LogError("No se puede enviar datos, el socket no está conectado.");
                 return;
             }
-
             try
             {
                 byte[] datasend = Encoding.Default.GetBytes(data);
                 int length = data.Length;
                 byte[] lengthBytes = BitConverter.GetBytes(length);
-
                 if (!BitConverter.IsLittleEndian)
                 {
                     Array.Reverse(lengthBytes);
@@ -327,7 +411,7 @@ public abstract class Personaje : MonoBehaviour
                     stream.Write(datasend, 0, datasend.Length);
                     bytesSent += currentChunkSize;
                 }
-
+                
             }
             catch (Exception e)
             {
